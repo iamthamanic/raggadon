@@ -28,12 +28,18 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 
 ## 🚀 Schnellstart
 
-### 1. Installation
+### One-Line Installation
+
+```bash
+curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install.sh | bash
+```
+
+### Manuelle Installation
 
 ```bash
 # Repository klonen
-git clone <your-repo-url>
-cd Raggadon
+git clone https://github.com/iamthamanic/raggadon.git
+cd raggadon
 
 # Dependencies installieren
 pip install -r requirements.txt
