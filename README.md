@@ -7,7 +7,10 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 - **Projektbasierte Speicherung**: Jede Nachricht wird projektsepariert gespeichert
 - **OpenAI Embeddings**: Verwendet `text-embedding-3-small` für Vektorisierung
 - **Supabase Backend**: Skalierbare Vektor-Datenbank mit Ähnlichkeitssuche
-- **Budget-Tracking**: Automatische Token-Verbrauchsüberwachung pro Projekt
+- **Budget-Tracking**: Automatische Token-Verbrauchsüberwachung pro Projekt mit Kostenberechnung
+- **Aktivitäts-Tracking**: Erste und letzte Nutzung pro Projekt mit exakten Zeitstempeln
+- **CLI-Integration**: Globaler `rag` Befehl für einfache Nutzung in jedem Projekt
+- **Auto-Start Service**: Automatischer Server-Start beim System-Login
 - **Type-Safe**: Vollständige Type Hints und Pydantic Models
 - **Code Quality**: Black, Ruff und Pre-commit Hooks integriert
 
@@ -240,11 +243,33 @@ pre-commit run --all-files
 ## 🔧 Projektstruktur
 
 - `main.py` - FastAPI App und Endpoints
-- `app/supabase_client.py` - Datenbank-Operationen
+- `app/supabase_client.py` - Datenbank-Operationen mit Aktivitäts-Tracking
 - `app/embedding.py` - OpenAI Embedding-Service
-- `app/usage.py` - Token Budget-Tracking
+- `app/usage.py` - Token Budget-Tracking und Statistiken
+- `rag` - CLI-Tool für einfache Nutzung
+- `install-*.sh` - Verschiedene Installer-Varianten
+- `start_server.sh` - Server-Starter Script
+- `install_service.sh` - Auto-Start Service Installer
 - `requirements.txt` - Python Dependencies
 - `.pre-commit-config.yaml` - Code Quality Hooks
+
+## 🆕 Neue Features (v2.0)
+
+### Erweiterte Statistiken
+- **Kosten-Tracking**: Automatische Berechnung der OpenAI-Kosten
+- **Aktivitäts-Timeline**: Erste und letzte Nutzung pro Projekt
+- **Token-Verbrauch**: Monatliche Übersicht pro Projekt
+- **Letzte Aktivitäten**: Historie der letzten save/search Operationen
+
+### CLI-Verbesserungen
+- **Zeitstempel-Format**: Exakte Datumsangaben (24.Juni.2025 - 13:41:30 Uhr)
+- **Detaillierte Status-Ausgabe**: Umfassende Projekt-Informationen
+- **Automatische Installation**: One-Liner Setup für neue Rechner
+
+### Service-Integration
+- **Auto-Start**: Server startet automatisch beim Login
+- **Background-Betrieb**: Läuft dauerhaft im Hintergrund
+- **Service-Management**: einfache Start/Stop Befehle
 
 ## 🤝 Integration mit Claude/Cursor
 
@@ -300,10 +325,30 @@ launchctl stop com.raggadon.server
 Wenn du mit Claude Code arbeitest, kannst du Raggadon direkt in der Konversation nutzen:
 
 **Verfügbare Befehle in Claude Code:**
-- `rag status` - Zeigt Server-Status und aktuelles Projekt
+- `rag status` - Zeigt erweiterte Server-Statistiken mit Kosten und Zeitangaben
 - `rag save` - Claude speichert automatisch wichtige Infos aus dem Kontext
 - `rag search <begriff>` - Sucht nach gespeicherten Informationen
 - `rag summary` - Zeigt Zusammenfassung des Projekts
+
+**Erweiterte `rag status` Ausgabe:**
+```
+✅ Raggadon läuft auf http://127.0.0.1:8000
+📁 Aktuelles Projekt: MeinProjekt
+
+📊 Projekt-Statistiken:
+   💾 Gespeicherte Einträge: 15
+   🔤 Tokens diesen Monat: 2,847
+   💰 Geschätzte Kosten: $0.0569
+   🤖 Embedding Model: text-embedding-3-small
+   💵 Preis: $0.02 pro 1K Tokens
+   🕐 Erste Aktivität: 15.Juni.2025 - 09:23:45 Uhr
+   🕐 Letzte Aktivität: 24.Juni.2025 - 13:41:30 Uhr
+
+📋 Letzte Aktivitäten:
+   • save: 142 Tokens
+   • search: 89 Tokens
+   • save: 156 Tokens
+```
 
 **Automatische Features:**
 - Claude speichert proaktiv wichtige Code-Snippets und Entscheidungen
