@@ -1,21 +1,8 @@
 #!/bin/bash
-# 🚀 Raggadon Installer - Weiterleitung
+# 🚀 Raggadon Installer (Mit vorkonfigurierten Credentials)
 
-echo "🎯 Raggadon Installer"
-echo "===================="
-echo ""
-echo "Dieser Installer leitet dich zur richtigen Version weiter:"
-echo ""
-echo "1) install-blank.sh - Für eigene API Keys"
-echo "2) install-preconfigured.sh - Mit vorkonfigurierten Keys"
-echo ""
-echo "Bitte verwende direkt einen der folgenden Befehle:"
-echo ""
-echo "curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install-blank.sh | bash"
-echo "oder"
-echo "curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install-preconfigured.sh | bash"
-echo ""
-exit 0
+echo "🎯 Raggadon Quick Installer (Vorkonfiguriert)"
+echo "============================================="
 
 # Farben für Output
 GREEN='\033[0;32m'
@@ -40,10 +27,9 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Create .env file
-echo "🔧 Erstelle Konfiguration..."
-if [ ! -f .env ]; then
-    cat > .env << 'EOF'
+# Create .env file with preconfigured credentials
+echo "🔧 Erstelle Konfiguration mit API Keys..."
+cat > .env << 'EOF'
 # OpenAI API Configuration
 OPENAI_API_KEY=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
 
@@ -60,8 +46,8 @@ HOST=0.0.0.0
 PORT=8000
 RELOAD=true
 EOF
-    echo -e "${GREEN}✅ .env mit deinen API Keys erstellt!${NC}"
-fi
+
+echo -e "${GREEN}✅ API Keys automatisch konfiguriert!${NC}"
 
 # Install dependencies
 echo "📚 Installiere Dependencies..."
@@ -85,9 +71,10 @@ mv raggadon_temp ~/raggadon
 
 echo ""
 echo -e "${GREEN}✅ Raggadon erfolgreich installiert!${NC}"
+echo -e "${GREEN}✅ API Keys bereits konfiguriert!${NC}"
 echo ""
 echo "🎯 Fertig! Führe aus:"
 echo "   source ~/.zshrc"
 echo "   rag status"
 echo ""
-echo "🚀 Raggadon ist bereit!"
+echo "🚀 Raggadon ist sofort einsatzbereit!"

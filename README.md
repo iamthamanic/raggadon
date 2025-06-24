@@ -30,8 +30,14 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 
 ### One-Line Installation
 
+**Option 1: Mit eigenen API Keys**
 ```bash
-curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install-blank.sh | bash
+```
+
+**Option 2: Mit vorkonfigurierten Keys (nur für @iamthamanic)**
+```bash
+curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install-preconfigured.sh | bash
 ```
 
 ### Manuelle Installation
