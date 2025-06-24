@@ -30,13 +30,24 @@ fi
 # Create .env file
 echo "🔧 Erstelle Konfiguration..."
 if [ ! -f .env ]; then
-    cp .env.example .env
-    echo -e "${GREEN}✅ .env erstellt - Bitte API Keys eintragen!${NC}"
-    echo ""
-    echo "📝 Öffne .env und trage ein:"
-    echo "   - OPENAI_API_KEY"
-    echo "   - SUPABASE_URL" 
-    echo "   - SUPABASE_API_KEY"
+    cat > .env << 'EOF'
+# OpenAI API Configuration
+OPENAI_API_KEY=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
+
+# Supabase Configuration  
+SUPABASE_URL=https://vfrdoxhdphxiprvehbol.supabase.co
+SUPABASE_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmcmRveGhkcGh4aXBydmVoYm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NTY3NDcsImV4cCI6MjA2NjMzMjc0N30.yR7NpRTfvpfhng5xMSx49Ij1Z3ReSWwSVsRmqLqzIDM
+
+# Development Settings
+ENVIRONMENT=development
+LOG_LEVEL=INFO
+
+# Server Configuration (Optional)
+HOST=0.0.0.0
+PORT=8000
+RELOAD=true
+EOF
+    echo -e "${GREEN}✅ .env mit deinen API Keys erstellt!${NC}"
 fi
 
 # Install dependencies
@@ -62,9 +73,8 @@ mv raggadon_temp ~/raggadon
 echo ""
 echo -e "${GREEN}✅ Raggadon erfolgreich installiert!${NC}"
 echo ""
-echo "📝 Nächste Schritte:"
-echo "1. Bearbeite ~/raggadon/.env mit deinen API Keys"
-echo "2. source ~/.zshrc"
-echo "3. rag status"
+echo "🎯 Fertig! Führe aus:"
+echo "   source ~/.zshrc"
+echo "   rag status"
 echo ""
-echo "🎉 Fertig!"
+echo "🚀 Raggadon ist bereit!"
