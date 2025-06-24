@@ -236,6 +236,57 @@ pre-commit run --all-files
 
 ## 🤝 Integration mit Claude/Cursor
 
+### Einfache CLI-Befehle
+
+Nach der Installation des `rag` CLI-Tools kannst du Raggadon in jedem Projekt verwenden:
+
+```bash
+# In deinem Projekt (z.B. ~/MeinProjekt)
+cd ~/MeinProjekt
+
+# Wichtige Informationen speichern
+rag save "Die Hauptdatenbank heißt production_db und läuft auf PostgreSQL"
+rag save "Der API-Key ist in der .env Datei unter EXTERNAL_API_KEY"
+rag save "Alle React-Komponenten liegen im src/components Ordner"
+
+# Nach Informationen suchen
+rag search "datenbank"
+rag search "api key"
+rag search "komponenten"
+
+# Server-Status prüfen
+rag status
+
+# Server starten (falls nicht läuft)
+rag start
+```
+
+**Wichtig:** Der Projektname wird automatisch aus dem aktuellen Ordnernamen ermittelt!
+
+### CLI-Installation
+
+```bash
+# Einmalig installieren
+cd ~/Desktop/ars\ vivai/Raggadon
+./install_rag_cli.sh
+source ~/.zshrc
+```
+
+### Service für automatischen Start
+
+```bash
+# Raggadon als Service installieren (startet automatisch bei Login)
+./install_service.sh
+
+# Service manuell steuern
+launchctl start com.raggadon.server
+launchctl stop com.raggadon.server
+```
+
+### Direkte API-Nutzung
+
+Alternativ kannst du die API direkt verwenden:
+
 1. Kopiere die API-URLs in dein Claude-Setup
 2. Verwende `POST /save` um wichtige Projekt-Kontexte zu speichern
 3. Verwende `GET /search` um relevante Informationen abzurufen

@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+
+import sys
+import json
+import os
+from pathlib import Path
+try:
+    import requests
+except ImportError:
+    import urllib.request
+    import urllib.parse
+    import urllib.error
+
+RAGGADON_URL = "http://127.0.0.1:8000"
+
+def get_project_name():
+    """Ermittelt den Projektnamen aus dem aktuellen Verzeichnis"""
+    return Path.cwd().name
+
+def save(content, role="user"):
+    """Speichert Content im RAG-System"""
+    project = get_project_name()
+    try:
+        response = requests.post(
+            f"{RAGGADON_URL}/save",
+            json={"project": project, "role": role, "content": content}
+        )
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Gespeichert für Projekt '{project}'")
+            print(f"   Tokens: {data['tokens_used']}, Kosten: ${data['estimated_cost_usd']:.4f}")
+        else:
+            print(f"❌ Fehler: {response.text}")
+    except requests.exceptions.ConnectionError:
+        print("❌ Raggadon Server läuft nicht! Starte ihn mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
+
+def search(query):
+    """Sucht im RAG-System"""
+    project = get_project_name()
+    try:
+        response = requests.get(
+            f"{RAGGADON_URL}/search",
+            params={"project": project, "query": query}
+        )
+        if response.status_code == 200:
+            data = response.json()
+            print(f"🔍 {len(data['results'])} Ergebnisse für '{query}' in Projekt '{project}':\n")
+            for i, result in enumerate(data['results'], 1):
+                print(f"{i}. [{result['similarity']:.2f}] {result['content'][:150]}...")
+                print()
+        else:
+            print(f"❌ Fehler: {response.text}")
+    except requests.exceptions.ConnectionError:
+        print("❌ Raggadon Server läuft nicht! Starte ihn mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
+
+def status():
+    """Prüft ob Raggadon läuft"""
+    try:
+        response = requests.get(f"{RAGGADON_URL}/health")
+        if response.status_code == 200:
+            print("✅ Raggadon läuft auf http://127.0.0.1:8000")
+            print(f"📁 Aktuelles Projekt: {get_project_name()}")
+        else:
+            print("❌ Raggadon antwortet nicht korrekt")
+    except requests.exceptions.ConnectionError:
+        print("❌ Raggadon läuft nicht!")
+        print("🚀 Starte mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
+
+def help():
+    """Zeigt Hilfe an"""
+    print("""
+🤖 Raggadon CLI - RAG für Claude Code
+
+Verwendung:
+  rag save "Wichtige Info über das Projekt"    # Speichert Info
+  rag search "datenbank"                       # Sucht nach Info
+  rag status                                   # Prüft Server-Status
+  rag help                                     # Diese Hilfe
+
+Das aktuelle Verzeichnis wird als Projektname verwendet.
+    """)
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        help()
+        sys.exit(0)
+    
+    command = sys.argv[1].lower()
+    
+    if command == "save" and len(sys.argv) > 2:
+        content = " ".join(sys.argv[2:])
+        save(content)
+    elif command == "search" and len(sys.argv) > 2:
+        query = " ".join(sys.argv[2:])
+        search(query)
+    elif command == "status":
+        status()
+    elif command == "help":
+        help()
+    else:
+        print(f"❌ Unbekannter Befehl: {command}")
+        help()
