@@ -141,11 +141,12 @@ except Exception as e:
         case "$MODE" in
             active|a|verbose|v)
                 echo "active" > "$CONFIG_FILE"
-                echo "✅ Active Mode aktiviert - Zeige alle RAG-Operationen"
+                echo "✅ Active Mode aktiviert - Claude zeigt alle RAG-Speicherungen an"
                 ;;
             silent|s)
                 echo "silent" > "$CONFIG_FILE"
                 echo "✅ Silent Mode aktiviert - RAG arbeitet im Hintergrund"
+                echo "   💡 Status sehen mit: rag status"
                 ;;
             ask|question|q)
                 echo "ask" > "$CONFIG_FILE"
@@ -168,8 +169,8 @@ except Exception as e:
                 echo "❌ Unbekannter Modus: $MODE"
                 echo ""
                 echo "Verfügbare Modi:"
-                echo "  rag mode active   # Zeige alle RAG-Operationen"
-                echo "  rag mode silent   # Arbeite im Hintergrund"
+                echo "  rag mode active   # Claude zeigt alle RAG-Speicherungen an"
+                echo "  rag mode silent   # Arbeite im Hintergrund (Status mit 'rag status')"
                 echo "  rag mode ask      # Frage vor jeder Operation"
                 echo "  rag mode show     # Zeige aktuellen Modus"
                 ;;
