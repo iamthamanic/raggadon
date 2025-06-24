@@ -88,6 +88,42 @@ class SupabaseClient:
         except Exception as e:
             logger.error(f"❌ Fehler beim Zählen der Einträge: {str(e)}")
             return 0
+    
+    async def get_first_activity(self, project: str) -> Dict[str, Any]:
+        """Holt die erste Aktivität eines Projekts"""
+        try:
+            result = self.client.table("project_memory")\
+                .select("created_at")\
+                .eq("project", project)\
+                .order("created_at", desc=False)\
+                .limit(1)\
+                .execute()
+            
+            if result.data and len(result.data) > 0:
+                return result.data[0]["created_at"]
+            return None
+                
+        except Exception as e:
+            logger.error(f"❌ Fehler beim Abrufen der ersten Aktivität: {str(e)}")
+            return None
+    
+    async def get_last_activity(self, project: str) -> Dict[str, Any]:
+        """Holt die letzte Aktivität eines Projekts"""
+        try:
+            result = self.client.table("project_memory")\
+                .select("created_at")\
+                .eq("project", project)\
+                .order("created_at", desc=True)\
+                .limit(1)\
+                .execute()
+            
+            if result.data and len(result.data) > 0:
+                return result.data[0]["created_at"]
+            return None
+                
+        except Exception as e:
+            logger.error(f"❌ Fehler beim Abrufen der letzten Aktivität: {str(e)}")
+            return None
 
     async def create_tables_if_not_exist(self):
         """Erstellt notwendige Tabellen falls sie nicht existieren"""

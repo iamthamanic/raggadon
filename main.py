@@ -174,6 +174,10 @@ async def get_project_stats(project: str):
         # Hole die letzten Aktivitäten
         recent_activities = await usage_tracker.get_recent_activities(project, limit=5)
         
+        # Hole erste und letzte Aktivität
+        first_activity = await supabase_client.get_first_activity(project)
+        last_activity = await supabase_client.get_last_activity(project)
+        
         return {
             "project": project,
             "total_memories": memories,
@@ -181,7 +185,9 @@ async def get_project_stats(project: str):
             "estimated_monthly_cost_usd": estimated_cost,
             "recent_activities": recent_activities,
             "cost_per_1k_tokens": 0.02,  # $0.02 per 1K tokens
-            "model": "text-embedding-3-small"
+            "model": "text-embedding-3-small",
+            "first_activity": first_activity,
+            "last_activity": last_activity
         }
         
     except Exception as e:
