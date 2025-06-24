@@ -329,6 +329,15 @@ Wenn du mit Claude Code arbeitest, kannst du Raggadon direkt in der Konversation
 - `rag save` - Claude speichert automatisch wichtige Infos aus dem Kontext
 - `rag search <begriff>` - Sucht nach gespeicherten Informationen
 - `rag summary` - Zeigt Zusammenfassung des Projekts
+- `rag mode <modus>` - Steuert wie Claude über RAG-Operationen informiert
+
+**RAG-Modi konfigurieren:**
+```bash
+rag mode active    # ✅ Claude zeigt alle RAG-Speicherungen an
+rag mode silent    # 🔇 Arbeite im Hintergrund (Status mit 'rag status')
+rag mode ask       # ❓ Frage vor jeder Operation
+rag mode show      # 🔧 Zeige aktuellen Modus
+```
 
 **Erweiterte `rag status` Ausgabe:**
 ```
@@ -354,6 +363,11 @@ Wenn du mit Claude Code arbeitest, kannst du Raggadon direkt in der Konversation
 - Claude speichert proaktiv wichtige Code-Snippets und Entscheidungen
 - Bei Fragen sucht Claude automatisch nach relevanten Infos in Raggadon
 - Du wirst informiert, wenn relevante Informationen gefunden wurden
+
+**Modi-Verhalten:**
+- **✅ Active Mode:** Claude meldet jede RAG-Speicherung sofort
+- **🔇 Silent Mode:** Claude arbeitet unsichtbar (Status mit `rag status` prüfen)
+- **❓ Ask Mode:** Claude fragt vor jeder Speicherung um Erlaubnis
 
 ### Direkte API-Nutzung
 
