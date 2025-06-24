@@ -75,6 +75,20 @@ class SupabaseClient:
             logger.error(f"❌ Fehler bei der Suche in Supabase: {str(e)}")
             raise
 
+    async def count_project_memories(self, project: str) -> int:
+        """Zählt die Anzahl der gespeicherten Einträge für ein Projekt"""
+        try:
+            result = self.client.table("project_memory")\
+                .select("id", count="exact")\
+                .eq("project", project)\
+                .execute()
+            
+            return result.count or 0
+                
+        except Exception as e:
+            logger.error(f"❌ Fehler beim Zählen der Einträge: {str(e)}")
+            return 0
+
     async def create_tables_if_not_exist(self):
         """Erstellt notwendige Tabellen falls sie nicht existieren"""
         try:

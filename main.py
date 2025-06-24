@@ -160,6 +160,35 @@ async def health_check():
     return {"status": "healthy", "service": "Raggadon RAG-Middleware"}
 
 
+@app.get("/project/{project}/stats")
+async def get_project_stats(project: str):
+    """Gibt Statistiken für ein Projekt zurück"""
+    try:
+        # Hole monatliche Token-Usage
+        monthly_usage = await usage_tracker.get_monthly_usage(project)
+        estimated_cost = monthly_usage * 0.00002
+        
+        # Zähle Einträge im Projekt
+        memories = await supabase_client.count_project_memories(project)
+        
+        # Hole die letzten Aktivitäten
+        recent_activities = await usage_tracker.get_recent_activities(project, limit=5)
+        
+        return {
+            "project": project,
+            "total_memories": memories,
+            "monthly_tokens": monthly_usage,
+            "estimated_monthly_cost_usd": estimated_cost,
+            "recent_activities": recent_activities,
+            "cost_per_1k_tokens": 0.02,  # $0.02 per 1K tokens
+            "model": "text-embedding-3-small"
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Fehler beim Abrufen der Projekt-Statistiken: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

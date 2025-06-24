@@ -152,3 +152,26 @@ class UsageTracker:
         except Exception as e:
             logger.error(f"❌ Fehler beim Abrufen der Gesamt-Usage: {str(e)}")
             raise
+
+    async def get_recent_activities(self, project: str, limit: int = 5) -> list:
+        """Liefert die letzten Aktivitäten für ein Projekt"""
+        try:
+            result = self.supabase.client.table("embedding_usage")\
+                .select("*")\
+                .eq("project", project)\
+                .order("created_at", desc=True)\
+                .limit(limit)\
+                .execute()
+            
+            if result.data:
+                return [{
+                    "type": entry["usage_type"],
+                    "tokens": entry["tokens"],
+                    "timestamp": entry["created_at"]
+                } for entry in result.data]
+            else:
+                return []
+                
+        except Exception as e:
+            logger.error(f"❌ Fehler beim Abrufen der Aktivitäten: {str(e)}")
+            return []
