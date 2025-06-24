@@ -78,26 +78,42 @@ async def save_memory(request: SaveRequest):
     """Speichert Projektinhalt mit Embedding in Supabase"""
     try:
         logger.info(f"💾 Speichere Inhalt für Projekt: {request.project}")
+        logger.info(f"💾 Content: {request.content[:100]}...")
         
+        # Test embedding service first
+        logger.info("🧠 Creating embedding...")
         embedding_result = await embedding_service.create_embedding(request.content)
         embedding_vector = embedding_result["embedding"]
         tokens_used = embedding_result["tokens"]
+        logger.info(f"🧠 Embedding created: {tokens_used} tokens")
         
+        # Test supabase save
+        logger.info("💾 Saving to Supabase...")
         await supabase_client.save_memory(
             project=request.project,
             role=request.role,
             content=request.content,
             embedding=embedding_vector,
         )
+        logger.info("💾 Saved to Supabase successfully")
         
-        await usage_tracker.track_usage(
-            project=request.project,
-            usage_type="save",
-            tokens=tokens_used,
-        )
-        
-        monthly_usage = await usage_tracker.get_monthly_usage(request.project)
-        estimated_cost = monthly_usage * 0.00002
+        # Test usage tracking (optional - table might not exist)
+        logger.info("📊 Tracking usage...")
+        monthly_usage = 0
+        estimated_cost = 0.0
+        try:
+            await usage_tracker.track_usage(
+                project=request.project,
+                usage_type="save",
+                tokens=tokens_used,
+            )
+            monthly_usage = await usage_tracker.get_monthly_usage(request.project)
+            estimated_cost = monthly_usage * 0.00002
+        except Exception as usage_error:
+            logger.warning(f"⚠️ Usage tracking failed (table might not exist): {str(usage_error)}")
+            # Continue without usage tracking
+            monthly_usage = tokens_used  # Just use current tokens
+            estimated_cost = (tokens_used / 1000) * 0.00002
         
         logger.info(f"🧾 Tokenverbrauch: {monthly_usage:,} Tokens (~${estimated_cost:.4f}) für Projekt '{request.project}'")
         
@@ -110,8 +126,9 @@ async def save_memory(request: SaveRequest):
         )
         
     except Exception as e:
-        logger.error(f"❌ Fehler beim Speichern: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = f"Fehler beim Speichern: {str(e)} | Type: {type(e).__name__}"
+        logger.error(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 
 @app.get("/search", response_model=SearchResponse)
@@ -130,14 +147,21 @@ async def search_memory(project: str, query: str):
             limit=5,
         )
         
-        await usage_tracker.track_usage(
-            project=project,
-            usage_type="search",
-            tokens=tokens_used,
-        )
-        
-        monthly_usage = await usage_tracker.get_monthly_usage(project)
-        estimated_cost = monthly_usage * 0.00002
+        # Track usage (optional - table might not exist)
+        monthly_usage = 0
+        estimated_cost = 0.0
+        try:
+            await usage_tracker.track_usage(
+                project=project,
+                usage_type="search",
+                tokens=tokens_used,
+            )
+            monthly_usage = await usage_tracker.get_monthly_usage(project)
+            estimated_cost = monthly_usage * 0.00002
+        except Exception as usage_error:
+            logger.warning(f"⚠️ Usage tracking failed: {str(usage_error)}")
+            monthly_usage = tokens_used
+            estimated_cost = (tokens_used / 1000) * 0.00002
         
         logger.info(f"🧾 Tokenverbrauch: {monthly_usage:,} Tokens (~${estimated_cost:.4f}) für Projekt '{project}'")
         logger.info(f"✅ {len(results)} Ergebnisse gefunden")
@@ -164,19 +188,25 @@ async def health_check():
 async def get_project_stats(project: str):
     """Gibt Statistiken für ein Projekt zurück"""
     try:
-        # Hole monatliche Token-Usage
-        monthly_usage = await usage_tracker.get_monthly_usage(project)
-        estimated_cost = monthly_usage * 0.00002
-        
-        # Zähle Einträge im Projekt
+        # Hole Projekt-Informationen
         memories = await supabase_client.count_project_memories(project)
-        
-        # Hole die letzten Aktivitäten
-        recent_activities = await usage_tracker.get_recent_activities(project, limit=5)
-        
-        # Hole erste und letzte Aktivität
         first_activity = await supabase_client.get_first_activity(project)
         last_activity = await supabase_client.get_last_activity(project)
+        
+        # Optional: Token-Usage (falls Tabelle existiert)
+        monthly_usage = 0
+        estimated_cost = 0.0
+        recent_activities = []
+        try:
+            monthly_usage = await usage_tracker.get_monthly_usage(project)
+            estimated_cost = monthly_usage * 0.00002
+            recent_activities = await usage_tracker.get_recent_activities(project, limit=5)
+        except Exception as usage_error:
+            logger.warning(f"⚠️ Usage tracking nicht verfügbar: {str(usage_error)}")
+            # Fallback values
+            monthly_usage = 0
+            estimated_cost = 0.0
+            recent_activities = []
         
         return {
             "project": project,

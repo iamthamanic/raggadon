@@ -73,6 +73,8 @@ SUPABASE_API_KEY=your-supabase-anon-key
 
 Erstelle folgende Tabellen in deiner Supabase-Datenbank:
 
+**Wichtig:** Beide Tabellen sind erforderlich für die vollständige Funktionalität!
+
 ```sql
 -- Projekt-Gedächtnis Tabelle
 create table project_memory (
@@ -84,7 +86,7 @@ create table project_memory (
   created_at timestamp default now()
 );
 
--- Usage Tracking Tabelle
+-- Usage Tracking Tabelle (ERFORDERLICH für erweiterte Statistiken)
 create table embedding_usage (
   id uuid primary key default gen_random_uuid(),
   project text not null,
@@ -92,6 +94,10 @@ create table embedding_usage (
   tokens integer not null,
   created_at timestamp default now()
 );
+
+-- Performance-Indizes für embedding_usage
+CREATE INDEX IF NOT EXISTS idx_embedding_usage_project ON embedding_usage(project);
+CREATE INDEX IF NOT EXISTS idx_embedding_usage_created_at ON embedding_usage(created_at);
 
 -- RPC Function für Ähnlichkeitssuche
 create or replace function match_documents (
@@ -343,6 +349,7 @@ rag mode show      # 🔧 Zeige aktuellen Modus
 ```
 ✅ Raggadon läuft auf http://127.0.0.1:8000
 📁 Aktuelles Projekt: MeinProjekt
+🔧 Modus: active
 
 📊 Projekt-Statistiken:
    💾 Gespeicherte Einträge: 15
@@ -358,6 +365,12 @@ rag mode show      # 🔧 Zeige aktuellen Modus
    • search: 89 Tokens
    • save: 156 Tokens
 ```
+
+**Neue Features in v2.1:**
+- 🔧 **Modus-Anzeige**: Zeigt aktuellen RAG-Modus (active/silent/ask)
+- 🕐 **Exakte Zeitstempel**: Format "24.Juni.2025 - 13:41:30 Uhr"
+- ⚠️ **Robuste Fehlerbehandlung**: Funktioniert auch ohne embedding_usage Tabelle
+- 📊 **Erweiterte Statistiken**: Erste und letzte Aktivität pro Projekt
 
 **Automatische Features:**
 - Claude speichert proaktiv wichtige Code-Snippets und Entscheidungen
