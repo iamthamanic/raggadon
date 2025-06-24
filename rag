@@ -1,102 +1,147 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
-import sys
-import json
-import os
-from pathlib import Path
+# Raggadon CLI - Einfacher Zugriff auf RAG-System
+
+RAGGADON_URL="http://127.0.0.1:8000"
+PROJECT_NAME=$(basename "$PWD")
+
+case "$1" in
+    save)
+        shift
+        CONTENT="$*"
+        if [ -z "$CONTENT" ]; then
+            echo "❌ Verwendung: rag save \"Deine wichtige Info\""
+            exit 1
+        fi
+        
+        curl -s -X POST "$RAGGADON_URL/save" \
+            -H "Content-Type: application/json" \
+            -d "{\"project\": \"$PROJECT_NAME\", \"role\": \"user\", \"content\": \"$CONTENT\"}" | \
+        python3 -c "import sys, json; d=json.load(sys.stdin); print(f'✅ Gespeichert für Projekt \\'$PROJECT_NAME\\': {d.get(\\"tokens_used\\", 0)} Tokens')" 2>/dev/null || \
+        echo "❌ Raggadon läuft nicht! Starte mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh"
+        ;;
+        
+    search)
+        shift
+        QUERY="$*"
+        if [ -z "$QUERY" ]; then
+            echo "❌ Verwendung: rag search \"suchbegriff\""
+            exit 1
+        fi
+        
+        echo "🔍 Suche nach '$QUERY' in Projekt '$PROJECT_NAME'..."
+        curl -s "$RAGGADON_URL/search?project=$PROJECT_NAME&query=$QUERY" | \
+        python3 -c "
+import sys, json
 try:
-    import requests
-except ImportError:
-    import urllib.request
-    import urllib.parse
-    import urllib.error
+    data = json.load(sys.stdin)
+    results = data.get('results', [])
+    print(f'\\n📚 {len(results)} Ergebnisse gefunden:\\n')
+    for i, r in enumerate(results[:5], 1):
+        print(f'{i}. [{r[\"similarity\"]:.2f}] {r[\"content\"][:150]}...')
+        print()
+except:
+    print('❌ Raggadon läuft nicht! Starte mit: ~/Desktop/ars\\\\ vivai/Raggadon/start_server.sh')
+"
+        ;;
+        
+    status)
+        curl -s "$RAGGADON_URL/health" > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            echo "✅ Raggadon läuft auf $RAGGADON_URL"
+            echo "📁 Aktuelles Projekt: $PROJECT_NAME"
+            echo ""
+            
+            # Hole Projekt-Statistiken
+            STATS=$(curl -s "$RAGGADON_URL/project/$PROJECT_NAME/stats")
+            
+            if [ $? -eq 0 ] && [ -n "$STATS" ]; then
+                echo "$STATS" | python3 -c "
+import sys, json
+from datetime import datetime, timezone
 
-RAGGADON_URL = "http://127.0.0.1:8000"
-
-def get_project_name():
-    """Ermittelt den Projektnamen aus dem aktuellen Verzeichnis"""
-    return Path.cwd().name
-
-def save(content, role="user"):
-    """Speichert Content im RAG-System"""
-    project = get_project_name()
+def format_timestamp(timestamp_str):
+    if not timestamp_str:
+        return 'nie'
     try:
-        response = requests.post(
-            f"{RAGGADON_URL}/save",
-            json={"project": project, "role": role, "content": content}
-        )
-        if response.status_code == 200:
-            data = response.json()
-            print(f"✅ Gespeichert für Projekt '{project}'")
-            print(f"   Tokens: {data['tokens_used']}, Kosten: ${data['estimated_cost_usd']:.4f}")
+        # Parse ISO timestamp (handle different formats)
+        if 'T' in timestamp_str:
+            # Remove timezone info if present
+            ts = timestamp_str.split('+')[0].split('Z')[0]
+            dt = datetime.fromisoformat(ts)
+            # Convert to local time
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            local_dt = dt.astimezone()
         else:
-            print(f"❌ Fehler: {response.text}")
-    except requests.exceptions.ConnectionError:
-        print("❌ Raggadon Server läuft nicht! Starte ihn mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
+            dt = datetime.fromisoformat(timestamp_str)
+            local_dt = dt
+            
+        # Format as: 24.Juli.2025 - 13:54:01 Uhr
+        months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+        
+        day = local_dt.day
+        month = months[local_dt.month - 1]
+        year = local_dt.year
+        hour = local_dt.hour
+        minute = local_dt.minute
+        second = local_dt.second
+        
+        return f'{day}.{month}.{year} - {hour:02d}:{minute:02d}:{second:02d} Uhr'
+        
+    except Exception as e:
+        # Fallback: show original timestamp
+        return timestamp_str
 
-def search(query):
-    """Sucht im RAG-System"""
-    project = get_project_name()
-    try:
-        response = requests.get(
-            f"{RAGGADON_URL}/search",
-            params={"project": project, "query": query}
-        )
-        if response.status_code == 200:
-            data = response.json()
-            print(f"🔍 {len(data['results'])} Ergebnisse für '{query}' in Projekt '{project}':\n")
-            for i, result in enumerate(data['results'], 1):
-                print(f"{i}. [{result['similarity']:.2f}] {result['content'][:150]}...")
-                print()
-        else:
-            print(f"❌ Fehler: {response.text}")
-    except requests.exceptions.ConnectionError:
-        print("❌ Raggadon Server läuft nicht! Starte ihn mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
-
-def status():
-    """Prüft ob Raggadon läuft"""
-    try:
-        response = requests.get(f"{RAGGADON_URL}/health")
-        if response.status_code == 200:
-            print("✅ Raggadon läuft auf http://127.0.0.1:8000")
-            print(f"📁 Aktuelles Projekt: {get_project_name()}")
-        else:
-            print("❌ Raggadon antwortet nicht korrekt")
-    except requests.exceptions.ConnectionError:
-        print("❌ Raggadon läuft nicht!")
-        print("🚀 Starte mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh")
-
-def help():
-    """Zeigt Hilfe an"""
-    print("""
-🤖 Raggadon CLI - RAG für Claude Code
-
-Verwendung:
-  rag save "Wichtige Info über das Projekt"    # Speichert Info
-  rag search "datenbank"                       # Sucht nach Info
-  rag status                                   # Prüft Server-Status
-  rag help                                     # Diese Hilfe
-
-Das aktuelle Verzeichnis wird als Projektname verwendet.
-    """)
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        help()
-        sys.exit(0)
+try:
+    stats = json.load(sys.stdin)
+    print('📊 Projekt-Statistiken:')
+    print(f'   💾 Gespeicherte Einträge: {stats.get(\"total_memories\", 0)}')
+    print(f'   🔤 Tokens diesen Monat: {stats.get(\"monthly_tokens\", 0):,}')
+    print(f'   💰 Geschätzte Kosten: \${stats.get(\"estimated_monthly_cost_usd\", 0):.4f}')
+    print(f'   🤖 Embedding Model: {stats.get(\"model\", \"unknown\")}')
+    print(f'   💵 Preis: \${stats.get(\"cost_per_1k_tokens\", 0):.2f} pro 1K Tokens')
     
-    command = sys.argv[1].lower()
+    # Zeitangaben
+    first = stats.get('first_activity')
+    last = stats.get('last_activity')
+    if first:
+        print(f'   🕐 Erste Aktivität: {format_timestamp(first)}')
+    if last:
+        print(f'   🕐 Letzte Aktivität: {format_timestamp(last)}')
     
-    if command == "save" and len(sys.argv) > 2:
-        content = " ".join(sys.argv[2:])
-        save(content)
-    elif command == "search" and len(sys.argv) > 2:
-        query = " ".join(sys.argv[2:])
-        search(query)
-    elif command == "status":
-        status()
-    elif command == "help":
-        help()
-    else:
-        print(f"❌ Unbekannter Befehl: {command}")
-        help()
+    activities = stats.get('recent_activities', [])
+    if activities:
+        print('\\n📋 Letzte Aktivitäten:')
+        for act in activities[:3]:
+            print(f'   • {act[\"type\"]}: {act[\"tokens\"]} Tokens')
+except Exception as e:
+    print('   ℹ️ Noch keine Statistiken für dieses Projekt vorhanden')
+"
+            else
+                echo "   ℹ️ Noch keine Statistiken für dieses Projekt vorhanden"
+            fi
+        else
+            echo "❌ Raggadon läuft nicht!"
+            echo "🚀 Starte mit: ~/Desktop/ars\\ vivai/Raggadon/start_server.sh"
+        fi
+        ;;
+        
+    start)
+        echo "🚀 Starte Raggadon Server..."
+        ~/Desktop/ars\ vivai/Raggadon/start_server.sh &
+        ;;
+        
+    *)
+        echo "🤖 Raggadon CLI - RAG für Claude Code"
+        echo ""
+        echo "Verwendung:"
+        echo "  rag save \"Wichtige Info\"    # Speichert Info für aktuelles Projekt"
+        echo "  rag search \"keyword\"        # Sucht im aktuellen Projekt"
+        echo "  rag status                  # Prüft Server-Status"
+        echo "  rag start                   # Startet Raggadon Server"
+        echo ""
+        echo "Aktuelles Projekt: $PROJECT_NAME"
+        ;;
+esac
