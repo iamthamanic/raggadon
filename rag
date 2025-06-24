@@ -133,6 +133,49 @@ except Exception as e:
         ~/Desktop/ars\ vivai/Raggadon/start_server.sh &
         ;;
         
+    mode)
+        shift
+        MODE="$1"
+        CONFIG_FILE="$HOME/.rag_config"
+        
+        case "$MODE" in
+            active|a|verbose|v)
+                echo "active" > "$CONFIG_FILE"
+                echo "✅ Active Mode aktiviert - Zeige alle RAG-Operationen"
+                ;;
+            silent|s)
+                echo "silent" > "$CONFIG_FILE"
+                echo "✅ Silent Mode aktiviert - RAG arbeitet im Hintergrund"
+                ;;
+            ask|question|q)
+                echo "ask" > "$CONFIG_FILE"
+                echo "✅ Ask Mode aktiviert - Frage vor jeder RAG-Operation"
+                ;;
+            show|status)
+                if [ -f "$CONFIG_FILE" ]; then
+                    CURRENT_MODE=$(cat "$CONFIG_FILE")
+                    # Convert old verbose to active
+                    if [ "$CURRENT_MODE" = "verbose" ]; then
+                        echo "active" > "$CONFIG_FILE"
+                        CURRENT_MODE="active"
+                    fi
+                    echo "🔧 Aktueller Modus: $CURRENT_MODE"
+                else
+                    echo "🔧 Aktueller Modus: active (Standard)"
+                fi
+                ;;
+            *)
+                echo "❌ Unbekannter Modus: $MODE"
+                echo ""
+                echo "Verfügbare Modi:"
+                echo "  rag mode active   # Zeige alle RAG-Operationen"
+                echo "  rag mode silent   # Arbeite im Hintergrund"
+                echo "  rag mode ask      # Frage vor jeder Operation"
+                echo "  rag mode show     # Zeige aktuellen Modus"
+                ;;
+        esac
+        ;;
+        
     *)
         echo "🤖 Raggadon CLI - RAG für Claude Code"
         echo ""
@@ -141,6 +184,7 @@ except Exception as e:
         echo "  rag search \"keyword\"        # Sucht im aktuellen Projekt"
         echo "  rag status                  # Prüft Server-Status"
         echo "  rag start                   # Startet Raggadon Server"
+        echo "  rag mode <active|silent|ask|show>   # Ändert Auto-Save Modus"
         echo ""
         echo "Aktuelles Projekt: $PROJECT_NAME"
         ;;
