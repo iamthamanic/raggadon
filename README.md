@@ -283,6 +283,21 @@ launchctl start com.raggadon.server
 launchctl stop com.raggadon.server
 ```
 
+### Integration in Claude Code
+
+Wenn du mit Claude Code arbeitest, kannst du Raggadon direkt in der Konversation nutzen:
+
+**Verfügbare Befehle in Claude Code:**
+- `rag status` - Zeigt Server-Status und aktuelles Projekt
+- `rag save` - Claude speichert automatisch wichtige Infos aus dem Kontext
+- `rag search <begriff>` - Sucht nach gespeicherten Informationen
+- `rag summary` - Zeigt Zusammenfassung des Projekts
+
+**Automatische Features:**
+- Claude speichert proaktiv wichtige Code-Snippets und Entscheidungen
+- Bei Fragen sucht Claude automatisch nach relevanten Infos in Raggadon
+- Du wirst informiert, wenn relevante Informationen gefunden wurden
+
 ### Direkte API-Nutzung
 
 Alternativ kannst du die API direkt verwenden:
