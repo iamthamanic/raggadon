@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.raggadon.server</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/halteverbotsocialmacpro/Desktop/ars vivai/Raggadon/start_server.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/halteverbotsocialmacpro/Desktop/ars vivai/Raggadon</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/halteverbotsocialmacpro/Desktop/ars vivai/Raggadon/raggadon.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/halteverbotsocialmacpro/Desktop/ars vivai/Raggadon/raggadon.error.log</string>
+</dict>
+</plist>
