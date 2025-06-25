@@ -9,6 +9,23 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Passwort-Schutz
+echo "🔐 Diese Installation ist passwort-geschützt."
+echo "💡 Nur autorisierte Benutzer haben Zugriff."
+echo ""
+read -s -p "Passwort eingeben: " PASSWORD
+echo ""
+
+# Passwort prüfen
+if [ "$PASSWORD" != "haltever2025!" ]; then
+    echo -e "${RED}❌ Falsches Passwort! Zugriff verweigert.${NC}"
+    echo -e "${RED}📧 Kontaktiere den Administrator für Zugriff.${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Passwort korrekt! Installation wird fortgesetzt...${NC}"
+echo ""
+
 # Check if git is installed
 if ! command -v git &> /dev/null; then
     echo -e "${RED}❌ Git ist nicht installiert!${NC}"
