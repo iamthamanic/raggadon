@@ -7,14 +7,15 @@ Dieses Dokument definiert, wie Claude Code mit Raggadon interagieren soll.
 Wenn der User einen der folgenden Befehle eingibt, führe die entsprechende Aktion aus:
 
 ### `rag status`
-Verwende: `~/bin/rag status`
+Verwende: `npx raggadon status`
 Zeigt erweiterte Statistiken mit Kosten und Token-Verbrauch.
 
-### `rag save`
-Speichere automatisch relevante Informationen aus dem aktuellen Kontext.
+### `rag save "information"`
+Verwende: `npx raggadon save "information"`
+Speichere wichtige Informationen mit dem angegebenen Text.
 
 ### `rag search <begriff>`
-Verwende: `~/bin/rag search "begriff"`
+Verwende: `npx raggadon search "begriff"`
 Suche nach Informationen im Projektgedächtnis.
 
 ### `rag summary`

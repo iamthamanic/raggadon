@@ -1,6 +1,14 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv()
+
+# Lade globale Config zuerst, dann lokale (falls vorhanden)
+global_env = Path.home() / '.raggadon.env'
+if global_env.exists():
+    load_dotenv(global_env)
+else:
+    load_dotenv()  # Fallback auf lokale .env
+
 import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
@@ -8,13 +16,10 @@ from typing import Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
 
 from app.supabase_client import SupabaseClient
 from app.embedding import EmbeddingService
 from app.usage import UsageTracker
-
-load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

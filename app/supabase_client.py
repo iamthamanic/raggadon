@@ -58,7 +58,7 @@ class SupabaseClient:
                 "match_documents",
                 {
                     "query_embedding": query_embedding,
-                    "match_threshold": 0.78,
+                    "match_threshold": 0.5,
                     "match_count": limit,
                     "project_filter": project,
                 }

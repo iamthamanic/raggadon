@@ -1,0 +1,43 @@
+{
+  "name": "raggadon",
+  "version": "1.0.0",
+  "description": "CLI client for Raggadon RAG system - provides project-based memory for AI assistants",
+  "main": "index.js",
+  "bin": {
+    "raggadon": "bin/rag.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"No build step required\"",
+    "prepublishOnly": "chmod +x bin/rag.js"
+  },
+  "keywords": [
+    "rag",
+    "ai",
+    "claude",
+    "memory",
+    "cli",
+    "assistant",
+    "embedding",
+    "vector-search"
+  ],
+  "author": "haltever",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haltever/raggadon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/haltever/raggadon/issues"
+  },
+  "homepage": "https://github.com/haltever/raggadon#readme"
+}

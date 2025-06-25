@@ -9,7 +9,7 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 - **Supabase Backend**: Skalierbare Vektor-Datenbank mit Ähnlichkeitssuche
 - **Budget-Tracking**: Automatische Token-Verbrauchsüberwachung pro Projekt mit Kostenberechnung
 - **Aktivitäts-Tracking**: Erste und letzte Nutzung pro Projekt mit exakten Zeitstempeln
-- **CLI-Integration**: Globaler `rag` Befehl für einfache Nutzung in jedem Projekt
+- **CLI-Integration**: NPM Package `raggadon` für universelle Nutzung
 - **Auto-Start Service**: Automatischer Server-Start beim System-Login
 - **Type-Safe**: Vollständige Type Hints und Pydantic Models
 - **Code Quality**: Black, Ruff und Pre-commit Hooks integriert
@@ -279,29 +279,44 @@ pre-commit run --all-files
 
 ## 🤝 Integration mit Claude/Cursor
 
+### NPM Package Installation
+
+**Globale Installation:**
+```bash
+npm install -g raggadon
+```
+
+**Oder direkt mit NPX verwenden:**
+```bash
+npx raggadon status
+```
+
 ### Einfache CLI-Befehle
 
-Nach der Installation des `rag` CLI-Tools kannst du Raggadon in jedem Projekt verwenden:
+Nach der Installation kannst du Raggadon in jedem Projekt verwenden:
 
 ```bash
 # In deinem Projekt (z.B. ~/MeinProjekt)
 cd ~/MeinProjekt
 
+# Projekt für Raggadon initialisieren
+npx raggadon init
+
 # Wichtige Informationen speichern
-rag save "Die Hauptdatenbank heißt production_db und läuft auf PostgreSQL"
-rag save "Der API-Key ist in der .env Datei unter EXTERNAL_API_KEY"
-rag save "Alle React-Komponenten liegen im src/components Ordner"
+npx raggadon save "Die Hauptdatenbank heißt production_db und läuft auf PostgreSQL"
+npx raggadon save "Der API-Key ist in der .env Datei unter EXTERNAL_API_KEY"
+npx raggadon save "Alle React-Komponenten liegen im src/components Ordner"
 
 # Nach Informationen suchen
-rag search "datenbank"
-rag search "api key"
-rag search "komponenten"
+npx raggadon search "datenbank"
+npx raggadon search "api key"
+npx raggadon search "komponenten"
 
 # Server-Status prüfen
-rag status
+npx raggadon status
 
 # Server starten (falls nicht läuft)
-rag start
+npx raggadon start
 ```
 
 **Wichtig:** Der Projektname wird automatisch aus dem aktuellen Ordnernamen ermittelt!
@@ -339,10 +354,10 @@ Wenn du mit Claude Code arbeitest, kannst du Raggadon direkt in der Konversation
 
 **RAG-Modi konfigurieren:**
 ```bash
-rag mode active    # ✅ Claude zeigt alle RAG-Speicherungen an
-rag mode silent    # 🔇 Arbeite im Hintergrund (Status mit 'rag status')
-rag mode ask       # ❓ Frage vor jeder Operation
-rag mode show      # 🔧 Zeige aktuellen Modus
+npx raggadon mode active    # ✅ Claude zeigt alle RAG-Speicherungen an
+npx raggadon mode silent    # 🔇 Arbeite im Hintergrund (Status mit 'rag status')
+npx raggadon mode ask       # ❓ Frage vor jeder Operation
+npx raggadon mode show      # 🔧 Zeige aktuellen Modus
 ```
 
 **Erweiterte `rag status` Ausgabe:**
