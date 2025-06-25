@@ -31,7 +31,27 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 
 ## 🚀 Schnellstart
 
-### One-Line Installation
+### NPM Installation (Empfohlen)
+
+**1. CLI installieren:**
+```bash
+npm install -g raggadon
+```
+
+**2. In Projekt initialisieren:**
+```bash
+cd your-project
+raggadon init  # Kopiert CLAUDE.md für Claude Code Integration
+```
+
+**3. Verwenden:**
+```bash
+raggadon save "Wichtige Projekt-Information"
+raggadon search "suchbegriff"
+raggadon status
+```
+
+### Server Installation
 
 **Option 1: Mit eigenen API Keys**
 ```bash
@@ -323,8 +343,18 @@ npx raggadon start
 
 ### CLI-Installation
 
+**Empfohlen - NPM Package:**
 ```bash
-# Einmalig installieren
+# Global installieren
+npm install -g raggadon
+
+# Oder direkt verwenden mit NPX
+npx raggadon status
+```
+
+**Legacy - Lokale Installation:**
+```bash
+# Einmalig installieren (für Entwicklung)
 cd ~/Desktop/ars\ vivai/Raggadon
 ./install_rag_cli.sh
 source ~/.zshrc
@@ -386,6 +416,8 @@ npx raggadon mode show      # 🔧 Zeige aktuellen Modus
 - 🕐 **Exakte Zeitstempel**: Format "24.Juni.2025 - 13:41:30 Uhr"
 - ⚠️ **Robuste Fehlerbehandlung**: Funktioniert auch ohne embedding_usage Tabelle
 - 📊 **Erweiterte Statistiken**: Erste und letzte Aktivität pro Projekt
+- 📦 **NPM Package**: Universal verfügbar über `npm install -g raggadon`
+- 🌐 **Cross-Platform**: Funktioniert auf Windows, macOS und Linux
 
 **Automatische Features:**
 - Claude speichert proaktiv wichtige Code-Snippets und Entscheidungen
