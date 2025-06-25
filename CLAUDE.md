@@ -11,8 +11,10 @@ Verwende: `npx raggadon status`
 Zeigt erweiterte Statistiken mit Kosten und Token-Verbrauch.
 
 ### `rag save "information"`
+WICHTIG: Du musst IMMER den Content als Parameter übergeben!
 Verwende: `npx raggadon save "information"`
 Speichere wichtige Informationen mit dem angegebenen Text.
+Beispiel: `npx raggadon save "Die API verwendet JWT für Authentifizierung"`
 
 ### `rag search <begriff>`
 Verwende: `npx raggadon search "begriff"`
@@ -60,6 +62,18 @@ Zeige eine Zusammenfassung der gespeicherten Informationen für das aktuelle Pro
    - Suche IMMER zuerst in Raggadon
    - Zeige gefundene relevante Infos
    - Nutze Kontext für bessere Antworten
+
+### WICHTIGE HINWEISE FÜR CLAUDE:
+
+1. **Bei `rag save` Befehlen**: 
+   - NIEMALS ohne Content aufrufen!
+   - IMMER Content aus dem Kontext extrahieren
+   - Beispiel: Wenn User sagt "rag save", dann analysiere den vorherigen Kontext und speichere relevante Informationen
+
+2. **Automatisches Speichern**:
+   - Wenn User wichtige Informationen teilt, speichere sie proaktiv
+   - Formatiere den Content aussagekräftig
+   - Beispiel: `npx raggadon save "Projekt verwendet React 18 mit TypeScript"`
 
 ## Integration auf neuem Rechner
 
