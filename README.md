@@ -65,6 +65,26 @@ curl -sSL https://raw.githubusercontent.com/iamthamanic/raggadon/main/install-pr
 
 ### Manuelle Installation
 
+**Option A: Mit Poetry (Empfohlen für Entwickler)**
+```bash
+# Repository klonen
+git clone https://github.com/iamthamanic/raggadon.git
+cd raggadon
+
+# Poetry installieren (falls nicht vorhanden)
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Dependencies installieren
+poetry install
+
+# Pre-commit hooks einrichten
+poetry run pre-commit install
+
+# Requirements.txt aktualisieren (optional)
+./sync-requirements.sh
+```
+
+**Option B: Mit pip (Einfache Installation)**
 ```bash
 # Repository klonen
 git clone https://github.com/iamthamanic/raggadon.git
@@ -238,6 +258,22 @@ Beispiel-Output im Terminal:
 
 ### Code-Qualität
 
+**Mit Poetry:**
+```bash
+# Code formatieren
+poetry run black .
+
+# Linting
+poetry run ruff check .
+
+# Linting mit Auto-Fix
+poetry run ruff check . --fix
+
+# Type Checking
+poetry run mypy .
+```
+
+**Mit pip:**
 ```bash
 # Code formatieren
 black .
@@ -247,15 +283,28 @@ ruff check .
 
 # Linting mit Auto-Fix
 ruff check . --fix
+
+# Type Checking (falls installiert)
+mypy .
 ```
 
 ### Pre-commit Hooks
 
+**Mit Poetry:**
+```bash
+# Hooks installieren
+poetry run pre-commit install
+
+# Manuell ausführen
+poetry run pre-commit run --all-files
+```
+
+**Mit pip:**
 ```bash
 # Hooks installieren
 pre-commit install
 
-# Manuell ausführen
+# Manuell ausführen  
 pre-commit run --all-files
 ```
 
@@ -276,7 +325,9 @@ pre-commit run --all-files
 - `install-*.sh` - Verschiedene Installer-Varianten
 - `start_server.sh` - Server-Starter Script
 - `install_service.sh` - Auto-Start Service Installer
-- `requirements.txt` - Python Dependencies
+- `requirements.txt` - Python Dependencies (pip)
+- `pyproject.toml` - Poetry Configuration & Dependencies  
+- `sync-requirements.sh` - Script zum Sync zwischen Poetry und pip
 - `.pre-commit-config.yaml` - Code Quality Hooks
 
 ## 🆕 Neue Features (v2.0)
