@@ -1,5 +1,8 @@
 # Raggadon Integration für Claude Code
 
+**Aktueller Stand:** Poetry Hybrid-Ansatz implementiert (v1.1.0)  
+**Letztes Update:** 26. Juni 2025
+
 Dieses Dokument definiert, wie Claude Code mit Raggadon interagieren soll.
 
 ## Befehle
@@ -75,9 +78,27 @@ Zeige eine Zusammenfassung der gespeicherten Informationen für das aktuelle Pro
    - Formatiere den Content aussagekräftig
    - Beispiel: `npx raggadon save "Projekt verwendet React 18 mit TypeScript"`
 
+3. **Entwicklungsstand-Kontext**:
+   - Lies DEVELOPMENT_STATUS.md für aktuellen Projektstand
+   - Poetry Hybrid-Ansatz ist implementiert (v1.1.0)
+   - Beide Installationswege (Poetry + pip) sind verfügbar
+
 ## Integration auf neuem Rechner
 
 Wenn User fragt wie Raggadon auf neuem Rechner eingerichtet wird:
 1. Verweise auf SETUP_NEW_MACHINE.md
-2. Biete an, die Schritte durchzugehen
+2. Biete an, die Schritte durchzugehen  
 3. Prüfe ob alle Dependencies vorhanden sind
+4. **WICHTIG:** Erkläre Poetry vs. pip Optionen (siehe DEVELOPMENT_STATUS.md)
+
+## Entwicklungsstand-Kontext
+
+**Aktueller Stand (v1.1.0):**
+- Poetry Hybrid-Ansatz implementiert ✅
+- pyproject.toml + requirements.txt parallel verfügbar
+- sync-requirements.sh Script für Synchronisation
+- README.md vollständig aktualisiert  
+- NPM Package URLs korrigiert
+- Alle Commits gepusht
+
+**Bei Entwicklungsfragen:** Lies DEVELOPMENT_STATUS.md für Details.
