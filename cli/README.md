@@ -119,9 +119,16 @@ When you run `npx raggadon init`, it adds a `CLAUDE.md` file that instructs Clau
 ```
 ┌─────────────────┐    HTTP API    ┌──────────────────┐
 │  NPX Package    │ ──────────────→ │  Raggadon Server │
-│  (CLI Client)   │                 │  + Supabase      │
-│                 │ ←────────────── │  + OpenAI        │
+│  (CLI Client)   │                 │  FastAPI + Poetry│
+│                 │ ←────────────── │  + Supabase      │
+│                 │                 │  + OpenAI        │
 └─────────────────┘                 └──────────────────┘
+                                    
+Server Dependencies:
+• Poetry (dev) / pip (production)
+• Python 3.9+
+• FastAPI + uvicorn
+• Supabase + pgvector
 ```
 
 ## Examples
@@ -173,4 +180,4 @@ MIT
 
 ## Repository
 
-[https://github.com/haltever/raggadon](https://github.com/haltever/raggadon)
+[https://github.com/iamthamanic/raggadon](https://github.com/iamthamanic/raggadon)

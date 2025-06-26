@@ -1,6 +1,6 @@
 {
   "name": "raggadon",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CLI client for Raggadon RAG system - provides project-based memory for AI assistants",
   "main": "index.js",
   "bin": {
@@ -21,7 +21,7 @@
     "embedding",
     "vector-search"
   ],
-  "author": "haltever",
+  "author": "iamthamanic",
   "license": "MIT",
   "dependencies": {
     "commander": "^11.0.0",
@@ -34,10 +34,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/haltever/raggadon.git"
+    "url": "https://github.com/iamthamanic/raggadon.git"
   },
   "bugs": {
-    "url": "https://github.com/haltever/raggadon/issues"
+    "url": "https://github.com/iamthamanic/raggadon/issues"
   },
-  "homepage": "https://github.com/haltever/raggadon#readme"
+  "homepage": "https://github.com/iamthamanic/raggadon#readme"
 }
