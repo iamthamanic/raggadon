@@ -19,7 +19,9 @@ Ein RAG-Backend mit FastAPI, das Claude in Cursor ein projektbasiertes Gedächtn
 ```
 📦 Raggadon/
 ├── 🚀 main.py              # FastAPI App & Endpoints
-├── 📋 requirements.txt     # Dependencies
+├── 📋 requirements.txt     # Dependencies (pip)
+├── 📝 pyproject.toml       # Poetry Configuration  
+├── 🔄 sync-requirements.sh # Sync Script (Poetry ↔ pip)
 ├── 🔧 .env.example         # Umgebungsvariablen
 ├── 🛠️ .pre-commit-config.yaml
 └── 📁 app/
@@ -50,6 +52,8 @@ raggadon save "Wichtige Projekt-Information"
 raggadon search "suchbegriff"
 raggadon status
 ```
+
+> **Hinweis**: Das NPM Package nutzt pip-Installation. Für Poetry-Development siehe manuelle Installation unten.
 
 ### Server Installation
 
